@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+    <style>
+        table, th, td {
+          border:1px solid black;
+          background-color: lightcoral ;
+          text-align: center
+        }
+        #prompt
+        {
+            height:50px;
+            width: 500px;
+            font-size:24pt;
+        }
+        </style>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>function updateHTML(row, intro, color, points){
+       document.getElementById('1').innerHTML = document.getElementById('1').innerHTML = row[0];
+       document.getElementById('2').innerHTML = document.getElementById('2').innerHTML = row[1];
+       document.getElementById('3').innerHTML = document.getElementById('3').innerHTML = row[2];
+       document.getElementById('4').innerHTML = document.getElementById('4').innerHTML = row[3];
+       document.getElementById('5').innerHTML = document.getElementById('5').innerHTML = row[4];
+       document.getElementById('6').innerHTML = document.getElementById('6').innerHTML = row[5];
+       document.getElementById('7').innerHTML = document.getElementById('7').innerHTML = row[6];
+       document.getElementById('8').innerHTML = document.getElementById('8').innerHTML = row[7];
+       document.getElementById('9').innerHTML = document.getElementById('9').innerHTML = row[8];
+       document.getElementById('10').innerHTML = document.getElementById('10').innerHTML = row[9];
+       document.getElementById('11').innerHTML = document.getElementById('11').innerHTML = row[10];
+       document.getElementById('12').innerHTML = document.getElementById('12').innerHTML = row[11];
+       document.getElementById('13').innerHTML = document.getElementById('13').innerHTML = row[12];
+       document.getElementById('14').innerHTML = document.getElementById('14').innerHTML = row[13];
+       document.getElementById('15').innerHTML = document.getElementById('15').innerHTML = row[14];
+       document.getElementById('16').innerHTML = document.getElementById('16').innerHTML = row[15];
+       if (color === 'red'){
+        document.getElementById('wordchoice').innerHTML = document.getElementById('wordchoice').innerHTML = '❌' + intro
+       } else if (color === 'green'){
+        document.getElementById('wordchoice').innerHTML = document.getElementById('wordchoice').innerHTML = '✔️' + intro
+       } else if (color === "used"){
+        document.getElementById('wordchoice').innerHTML = document.getElementById('wordchoice').innerHTML = '❌' + intro + " has already been entered."
+       } else if (color === "points"){
+        document.getElementById('wordchoice').innerHTML = document.getElementById('wordchoice').innerHTML = '😊 ' + 'High Score: ' + points + ' 😊'
+       }
+       
+     
+
+    }
+       
+   </script>
+    <script src = "boggle.js"></script>
+    <center><h1>Boggle Board</h1>
+        <br><br><h2><span id="wordchoice"></span></h2>
+    <br><br><h2><span id = "title">Press the Start Game/New Round button to begin!</span></h2>
+    <br><br><br>
+    <table style="width:75%">
+        <tr>
+            <td><h1><span id = "1">1</span></h1></td>
+            <td><h1><span id = "2">1</span></h1></td>
+            <td><h1><span id = "3">1</span></h1></td>
+            <td><h1><span id = "4">1</span></h1></td>
+        </tr>
+        <tr>
+            <td><h1><span id = "5">1</span></h1></td>
+            <td><h1><span id = "6">1</span></h1></td>
+            <td><h1><span id = "7">1</span></h1></td>
+            <td><h1><span id = "8">1</span></h1></td>
+        </tr>
+        <tr>
+            <td><h1><span id = "9">1</span></h1></td>
+            <td><h1><span id = "10">1</span></h1></td>
+            <td><h1><span id = "11">1</span></h1></td>
+            <td><h1><span id = "12">1</span></h1></td>
+        </tr>
+        <tr>
+            <td><h1><span id = "13">1</span></h1></td>
+            <td><h1><span id = "14">1</span></h1></td>
+            <td><h1><span id = "15">1</span></h1></td>
+            <td><h1><span id = "16">1</span></h1></td>
+        </tr>
+    </table>
+
+    <br><br><br>
+    <input type="button" value="Start Game/New Round" onclick="newBoard.start()">
+    <br><br>
+    <input type = "text" id = "prompt" height = "75" width = "75" onchange="newBoard.enterInput()">
+
+</center>
+</body>
+</html>
