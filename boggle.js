@@ -25,6 +25,8 @@ class Board{
 
     }
 
+
+    //When the start game button is pressed. Unusable once timer starts.
     start(){
         if (!inGame){
             this.enteredWordsArray = []
@@ -34,6 +36,7 @@ class Board{
             this.shuffleBoard(this.board)
             updateHTML(this.board)
             inGame = true
+            //game in session - timer starts
             var threeMinutes = 60 * 1,
             display = document.querySelector('#title');
             this.startTimer(threeMinutes, display);
@@ -51,7 +54,7 @@ class Board{
             seconds = seconds < 10 ? "0" + seconds : seconds;
     
             display.textContent = minutes + ":" + seconds;
-    
+    //once timer ends, game is "over" and points are displayed. Press button again to play a new game. High score is tracked.
             if (--timer < 0) {
                 timer = duration;
                 clearInterval(timerCount)
@@ -68,7 +71,7 @@ class Board{
 
 
    
-
+//shuffles the board - ensuring no letters are duplicated.
     shuffleBoard(row){
         for (let i=0; i <= 15;){
             let newDie = new Die()
@@ -84,6 +87,7 @@ class Board{
         }
     }
 
+    //code runs when a value is entered into the HTML input AND timer is running.
     enterInput(){
         if(inGame){
             let enteredWord = document.getElementById('prompt').value.split(" ").join("").toUpperCase()
@@ -106,15 +110,16 @@ class Board{
 
             const inputField = document.getElementById("prompt");
             inputField.value = " ";
-            
-        // } else {
-        //     console.log("Don't enter right now.")
+
         }
        
     }
 
     
-
+//algorithm for ensuring words are connected. 
+//Problem 1 - Unlike normal boggle, you can reuse a letter multiple times in the same word. (Not a huge deal to me)
+//Problem 2 - You can enter any string of words that connect, I need some external database to validate entry is an english word.
+//Problem 3 - I had to ensure there were no duplicate letters on the board, because this algorithm will fail if a letter is on the board more than once.
     boardLogic(enteredWord){
         const validConnections = [
             [this.board[1], this.board[4], this.board[5]], //index 0
@@ -134,9 +139,7 @@ class Board{
             [this.board[9], this.board[10], this.board[11],this.board[13],this.board[15]], //index 14
             [this.board[10], this.board[11], this.board[14]] //index 15
         ]
-            //valid connections is working...next step, iterate through the word.
           if (this.boardWords.indexOf(enteredWord[0]) !== -1){
-              //this is working (above)
               let currentLetterIndex = this.boardWords.indexOf(enteredWord[0])
               let currentLetter = this.board[currentLetterIndex]
               let validConnects = 1
