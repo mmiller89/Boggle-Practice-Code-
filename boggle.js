@@ -1,18 +1,3 @@
-//STEPS (CURRENT STEP - 9)
-//1 - Create classes - Board to handle the shuffling and maitenance of the board itself and Die to handle the letters and shuffling of the individual dies.
-//Tie each slot on the board to an array value for later on (e.g. first row [0,1,2,3])
-//2 - Create properties and methods to shuffle both the "dice" on the board and the letters of the die.
-//3 - Create basic HTML table to display values. 
-//4 - Create a shuffle button that performs methods in step 2, displays them to the board.
-//5 - Begin a timer of 3 minutes that starts ticking down, once it hits 0 the round is over. While ticking down, a prompt bar is displayed to enter words.
-//6 - Develop algorithm that determines letters that are connected with each other on the board(across, vertical or diagonal)
-//7 - BONUS (Return later) - Find a library or something that holds an english dictionary to check if word is legit (for now, any words are valid.)
-//8 - If words are connected, enter them into a list of correct words and display on the page.
-//9 - Display high score somewhere on the board. BONUS: Hold this value in a text file for retrieval next time the page is loaded.
-
-
-
-
 var inGame = false
 
 class Board{
@@ -28,19 +13,19 @@ class Board{
 
     //When the start game button is pressed. Unusable once timer starts.
     start(){
-        if (!inGame){
+        if (inGame){
+          return
+            } 
             this.enteredWordsArray = []
             this.points = 0
             this.boardWords = []
             alert("Begin Round!")
-            this.shuffleBoard(this.board)
-            updateHTML(this.board)
             inGame = true
+            this.shuffleBoard(this.board)
             //game in session - timer starts
-            var threeMinutes = 60 * 1,
+            var timerMinutes = 60 * 8,
             display = document.querySelector('#title');
-            this.startTimer(threeMinutes, display);
-            }  
+            this.startTimer(timerMinutes, display); 
     }
 
     
@@ -72,26 +57,31 @@ class Board{
 
    
 //shuffles the board - ensuring no letters are duplicated.
-    shuffleBoard(row){
+    shuffleBoard(){
+        if(!inGame){
+           return
+        }
+        this.boardWords = []
         for (let i=0; i <= 15;){
-            let newDie = new Die()
-            if (this.boardWords.includes(newDie.side)){
-                
-            } else {
-                row[i] = newDie.side
-                this.boardWords.push(row[i])
-                i++
-            }
+        let newDie = new Die()
+        this.board[i] = newDie.side
+        this.boardWords.push(this.board[i])
+        i++
+        }
+        updateHTML(this.board)
+       
             
 
-        }
+        
     }
 
     //code runs when a value is entered into the HTML input AND timer is running.
     enterInput(){
         if(inGame){
             let enteredWord = document.getElementById('prompt').value.split(" ").join("").toUpperCase()
-            let isValidWord = this.boardLogic(enteredWord)
+            let isValidWord = this.validWordCheck(enteredWord)
+            
+            
         if(isValidWord){
             updateHTML(this.board, enteredWord, 'green')
             if (this.enteredWordsArray.includes(enteredWord)){
@@ -120,7 +110,7 @@ class Board{
 //Problem 1 - Unlike normal boggle, you can reuse a letter multiple times in the same word. (Not a huge deal to me)
 //Problem 2 - You can enter any string of words that connect, I need some external database to validate entry is an english word.
 //Problem 3 - I had to ensure there were no duplicate letters on the board, because this algorithm will fail if a letter is on the board more than once.
-    boardLogic(enteredWord){
+    validWordCheck(enteredWord){
         const validConnections = [
             [this.board[1], this.board[4], this.board[5]], //index 0
             [this.board[0], this.board[4], this.board[5], this.board[6], this.board[2]], //index 1
@@ -139,26 +129,67 @@ class Board{
             [this.board[9], this.board[10], this.board[11],this.board[13],this.board[15]], //index 14
             [this.board[10], this.board[11], this.board[14]] //index 15
         ]
-          if (this.boardWords.indexOf(enteredWord[0]) !== -1){
-              let currentLetterIndex = this.boardWords.indexOf(enteredWord[0])
-              let currentLetter = this.board[currentLetterIndex]
-              let validConnects = 1
+        //the first step is validate that the first letter of enteredWord is on the board
+        if (this.boardWords.indexOf(enteredWord[0]) !== -1){
+            let nestedArray = []
+            //then we need to create an array of objects to identify the letter name and what index value it was found on.
+            for (let i=0; i <= this.boardWords.length; i++){
+                if (enteredWord[0] === this.boardWords[i]){
+                    let obj = {}
+                    obj["letter"] = this.boardWords[i];
+                    obj["index"] = i;
+                    obj["word"] = this.boardWords[i]
+                    nestedArray.push(obj)  
+                } 
+        } 
 
-              for (let i=1; i <= enteredWord.length; i++){   
-                  if (validConnections[currentLetterIndex].indexOf(enteredWord[i]) !== -1){
-                    currentLetterIndex = this.boardWords.indexOf(enteredWord[i])
-                    currentLetter = this.board[currentLetterIndex]
-                    validConnects++
-                  } 
-              } if (validConnects === enteredWord.length){
-                  return true
+        //now that I have the object array created, I need to find a way to add to the word object until it matches the length of the entered word.
+        var currentPosition = 1
+        for (let p=0; p <= enteredWord.length-1; p++){
+            nestedArray = this.checkNextValidValue(nestedArray, enteredWord, validConnections, currentPosition)
+            currentPosition++
+            for (let h=0; h <= nestedArray.length - 1; h++){
+                if (nestedArray[h].word.length === enteredWord.length && dictionaryArray.indexOf(nestedArray[h].word.toLowerCase()) !== -1){ //here's where we would check if it was an english word
+                    console.log(nestedArray)
+                    return true
+                    
                 }
 
-          
-          } else {
-              return false
-          }
+            }
 
+        } 
+        console.log(nestedArray)
+        return false
+       } 
+    }
+
+    checkNextValidValue(nestedArray, enteredWord, validConnections, currentPosition){   
+        for (let k=0; k <= nestedArray.length - 1; k++){
+            let connectPos = nestedArray[k].index
+            //this is asking is validConnections at the current index of nested array "index" value contains the next letter
+            //this is also where I'd need to check if the word being entered is not in the last position (no repeat letters)
+            if (validConnections[connectPos].includes(enteredWord[currentPosition])){ 
+                nestedArray[k].word += enteredWord[currentPosition]
+                }
+              
+            
+               
+        }
+        for (let j=0; j <= nestedArray.length - 1; j++){
+            
+            if (validConnections[nestedArray[j].index].includes(nestedArray[j].word.slice(-1))){ //in theory, the index value is still the previous one, but the slice is the most current end letter. thus, it's checking if the new letter is a connection of the old one.
+                for (let p=0; p <= this.board.length;p++){
+
+                    if (this.board[p] === nestedArray[j].word.slice(-1) && validConnections[nestedArray[j].index].includes(nestedArray[j].word.slice(-1))){
+                        nestedArray[j].index = p
+
+                    }
+                }
+            }
+        }
+            return nestedArray
+            
+    
     }
     
 }
@@ -167,18 +198,16 @@ class Board{
 
 class Die{
     constructor(){
-        this.letters = ['A', 'E', 'I', 'O', 'U', 'T', 'W', 'Q', 'P', 'F', 'C', 'B', 'M', 'N', 'R', 'Y', 'P', 'S', 'D', 'G', 'H', 'J', 'K', 'L', 'Z', 'X']
-        this.side = this.randomIndexPick(this.letters)
+        this.letters = ['A', 'E', 'I', 'O', 'U', 'T', 'W', 'Q', 'P', 'F', 'C', 'B', 'M', 'N', 'R', 'Y', 'P', 'S', 'D', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'A', 'E', 'I', 'O', 'U']
+        this.side = this.randomIndexPick()
         
 
     }
 
-    randomIndexPick(array){
-        return array[Math.floor(Math.random() * array.length)];
+    randomIndexPick(){
+        return this.letters[Math.floor(Math.random() * this.letters.length)];
     }
 }
 
 
 let newBoard = new Board()
-
-

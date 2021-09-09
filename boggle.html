@@ -53,6 +53,7 @@
        
    </script>
     <script src = "boggle.js"></script>
+    <script src = "dictionary.js"></script>
     <center><h1>Boggle Board</h1>
         <br><br><h2><span id="wordchoice"></span></h2>
     <br><br><h2><span id = "title">Press the Start Game/New Round button to begin!</span></h2>
@@ -85,7 +86,7 @@
     </table>
 
     <br><br><br>
-    <input type="button" value="Start Game/New Round" onclick="newBoard.start()">
+    <input type="button" value="Start Game/New Round" onclick="newBoard.start()"><input type="button" value="Shuffle (Mid-Game)" onclick="newBoard.shuffleBoard()">
     <br><br>
     <input type = "text" id = "prompt" height = "75" width = "75" onchange="newBoard.enterInput()">
 
