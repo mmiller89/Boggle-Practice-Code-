@@ -105,11 +105,6 @@ class Board{
        
     }
 
-    
-//algorithm for ensuring words are connected. 
-//Problem 1 - Unlike normal boggle, you can reuse a letter multiple times in the same word. (Not a huge deal to me)
-//Problem 2 - You can enter any string of words that connect, I need some external database to validate entry is an english word.
-//Problem 3 - I had to ensure there were no duplicate letters on the board, because this algorithm will fail if a letter is on the board more than once.
     validWordCheck(enteredWord){
         const validConnections = [
             [this.board[1], this.board[4], this.board[5]], //index 0
